@@ -89,59 +89,106 @@
 
         $scope.data = data;
 
+        $scope.crops = [{
+          "type": "Alfalfa",
+          "area": "12",
+          "fresh": "100",
+          "dry": "90",
+          "area_unit": "acres",
+          "fresh_unit": "pounds",
+          "dry_unit": "pounds",
+          "planting_period": "end",
+          "planting_month": "April",
+          "planting_year": 2017,
+          "harvesting_period": "middle",
+          "harvesting_month": "August",
+          "harvesting_year": 2017
+        }];
+
+        $scope.addCrop = function() {
+          $scope.crops.push({});
+        }
+
+        $scope.removeCrop = function(crop) {
+          var index = $scope.crops.indexOf(crop);
+          $scope.crops.splice(index, 1);
+        };
+
         $scope.submit = function() {
-          $http.post("http://localhost:8000");
+          $http.post("http://localhost:8000", $scope.crops);
         };
         
       });
     </script>
+
+    <style>
+      label {
+        display: inline-block; 
+        width: 208px;
+      }
+    </style>
+
   </head>
   <body ng-app="app" ng-controller="ctrl" class="container">
 
-    <form id="crops" ng-submit="submit()">
+    <form ng-submit="submit()">
 
-    <p>
-      <label for="id_crop_type" style="display: inline-block; width: 208px;">Crop type</label>
-      <select id="id_crop_type" name="crop_type" ng-model="crop_type" ng-options="crop for crop in data.crops"></select>
-    </p>
-    
-    <p>
-      <label for="id_field_size_value" style="display: inline-block; width: 208px;">Crop area</label>
-      <input id="id_field_size_value" name="field_size_value" type="text">
-      <select ng-model="field_area_unit" ng-options="unit for unit in data.area"></select>
-    </p>
+      <div ng-repeat="crop in crops">
 
-    <p>
-      <label for="id_product_fresh_value" style="display: inline-block; width: 208px;">Fresh product amount</label>
-      <input id="id_product_fresh_value" name="product_fresh_value" type="text">
-      <select ng-model="product_fresh_value" ng-options="unit for unit in data.units"></select>
-    </p>
+        <p>
+          <label for="id_crop_type">Crop type</label>
+          <select id="id_crop_type" name="crop_type" ng-model="crop.type" ng-options="crop for crop in data.crops"></select>
+        </p>
+        
+        <p>
+          <label for="id_field_size_value">Crop area</label>
+          <input id="id_field_size_value" ng-model="crop.area"type="text">
+          <select ng-model="crop.area_unit" ng-options="unit for unit in data.area"></select>
+        </p>
 
-    <p>
-      <label for="id_product_dry_value" style="display: inline-block; width: 208px;">Finished product amount</label>
-      <input id="id_product_dry_value" name="product_dry_value" type="text">
-      <select ng-model="product_dry_unit" ng-options="unit for unit in data.units"></select>
-    </p>
+        <p>
+          <label for="id_product_fresh_value">Fresh product amount</label>
+          <input id="id_product_fresh_value" ng-model="crop.fresh"type="text">
+          <select ng-model="crop.fresh_unit" ng-options="unit for unit in data.units"></select>
+        </p>
 
-    <p>
-      <label for="id_date_planting_time" style="display: inline-block; width: 208px;">Planting time</label>
-      <select ng-model="date_planting_period" ng-options="unit for unit in data.period" id="id_date_planting_time"></select>
-      <select ng-model="date_planting_month" ng-options="unit for unit in data.months"></select>
-      <select ng-model="date_planting_year" ng-options="unit for unit in data.years"></select>
-    </p> 
+        <p>
+          <label for="id_product_dry_value">Finished product amount</label>
+          <input id="id_product_dry_value" ng-model="crop.dry" type="text">
+          <select ng-model="crop.dry_unit" ng-options="unit for unit in data.units"></select>
+        </p>
 
-    <p>
-      <label for="id_date_harvesting_time" style="display: inline-block; width: 208px;">Harvesting date</label>
-      <select ng-model="date_harvesting_period" ng-options="unit for unit in data.period" id="id_date_harvesting_time"></select>
-      <select ng-model="date_harvesting_month" ng-options="unit for unit in data.months"></select>
-      <select ng-model="date_harvesting_year" ng-options="unit for unit in data.years"></select>
-    </p>
+        <p>
+          <label for="id_date_planting_time">Planting time</label>
+          <select ng-model="crop.planting_period" ng-options="unit for unit in data.period" id="id_date_planting_time"></select>
+          <select ng-model="crop.planting_month" ng-options="unit for unit in data.months"></select>
+          <select ng-model="crop.planting_year" ng-options="unit for unit in data.years"></select>
+        </p> 
 
-    <p>
-      <input type="submit" value="OK">
-    </p>
+        <p>
+          <label for="id_date_harvesting_time">Harvesting date</label>
+          <select ng-model="crop.harvesting_period" ng-options="unit for unit in data.period" id="id_date_harvesting_time"></select>
+          <select ng-model="crop.harvesting_month" ng-options="unit for unit in data.months"></select>
+          <select ng-model="crop.harvesting_year" ng-options="unit for unit in data.years"></select>
+        </p>
+
+        <a href ng-click="removeCrop(crop)" ng-show="$index !== 0">remove crop</a>
+
+        <hr>
+
+      </div>
+
+      <p>
+        <input type="button" value="Add crop" ng-click="addCrop()">
+      </p>
+
+      <p>
+        <input type="submit" value="Submit">
+      </p>
 
     </form>
+
+    <pre>{{ crops | json }}</pre>
 
   </body>
 </html>
